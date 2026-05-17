@@ -1,0 +1,42 @@
+{
+  "name": "Rust Multi-Service Dev Environment",
+  "build": {
+    "dockerfile": "../Containerfile",
+    "target": "developmental" // <-- Tells Podman to stop at the dev stage
+  },
+  "features": {
+        "ghcr.io/devcontainers/features/common-utils:2": {
+            "configureZshAsDefaultShell": true,
+            "installFeatures": true // Automatically brings in bat, ripgrep, etc. via apt
+        },
+        // 1. Adds a lightweight, official Node/NPM layer to your container
+        "ghcr.io/devcontainers/features/node:1": {
+            "version": "lts"
+        }  
+  },
+  "customizations": {
+    "vscode": {
+      "extensions": [
+        "rust-lang.rust-analyzer",
+        "tamasfe.even-better-toml",
+        "serayuzgur.crates",
+        "vadimcn.vscode-lldb",
+        "robert-neff.vscode-just"
+      ]
+    }
+  },
+  // Mounts your local WSL folder directly into the container
+  "workspaceMount": "source=${localWorkspaceFolder},target=/workspace,type=bind",
+  "workspaceFolder": "/workspace",
+
+  // Crucial Podman/WSL settings for file permissions:
+  "runArgs": ["--userns=keep-id"],
+  "remoteUser": "spidrling",
+
+  // Automatically runs right after Podman hooks up your workspace
+  // Uncomment to build if you're having trouble downloading with curl and cargo-binstall, 
+  // comment out the curl line if you want to use cargo install instead
+  // Pure native compilation—no curl scripts to break or fail with 404s
+  "postCreateCommand": "cargo install cargo-watch cargo-nextest just eza bottom --locked && npm install -g concurrently"
+  //"postCreateCommand": "curl -Lks https://raw.githubusercontent.com/cargo-bins/cargo-binstall/main/install.sh | sh && cargo binstall -y cargo-watch cargo-nextest just eza bottom"
+}
