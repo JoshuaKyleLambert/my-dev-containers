@@ -4,7 +4,7 @@ fn main() {
         println!("Hello from Service Alpha! I handle incoming API requests. Counter: {}", counter);
         counter += 1;
         std::thread::sleep(std::time::Duration::from_secs(5));
-        if counter >= 20 {
+        if counter >= 5 {
             break;
         }
     }
@@ -12,3 +12,5 @@ fn main() {
 
     println!("Hello from Service Alpha! I handle incoming API requests.");
 }
+
+
